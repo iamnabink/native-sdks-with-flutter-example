@@ -56,21 +56,174 @@ This will generate frameworks/AARs for Debug, Profile, and Release configuration
 
 ### iOS Integration
 
-#### SwiftUI Example (`ios-example`)
+Once the Flutter module is linked into your application, you're ready to fire up an instance of the Flutter engine and present the Flutter view controller.
 
-1. Ensure Flutter frameworks are in `ios-example/Flutter/Debug/` (or Release/Profile)
-2. Open `ios-example.xcodeproj` in Xcode
-3. Build and run
+#### Step 1: Link Flutter Frameworks
 
-See [ios-example/README.md](ios-example/README.md) for detailed instructions.
+Download the prebuilt Flutter frameworks and add them to your Xcode project:
+
+1. Open the `Flutter/Release` directory (or Debug/Profile based on your build configuration)
+2. Drag `App.xcframework` and `Flutter.xcframework` to the **General > Frameworks, Libraries, and Embedded Content** section of your app target in Xcode
+3. Ensure both frameworks are set to "Embed & Sign"
+
+#### Step 2: Set Up Flutter Engine in AppDelegate
+
+Create new `AppDelegate.swift`, instantiate and run the Flutter engine:
+
+```swift
+import UIKit
+import Flutter
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var flutterEngine: FlutterEngine?
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Instantiate Flutter engine
+        self.flutterEngine = FlutterEngine(name: "io.flutter", project: nil)
+        self.flutterEngine?.run(withEntrypoint: nil)
+        return true
+    }
+}
+```
+
+For SwiftUI apps, use `@UIApplicationDelegateAdaptor`:
+
+```swift
+@main
+struct MyApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+```
+
+#### Step 3: Present Flutter View Controller
+
+In any ViewController (typically in response to a button press), present the Flutter module's UI:
+
+```swift
+let flutterEngine = (UIApplication.shared.delegate as! AppDelegate).flutterEngine
+let flutterViewController = FlutterViewController(engine: flutterEngine, nibName: nil, bundle: nil)
+present(flutterViewController, animated: true, completion: nil)
+```
+
+Once executed, the Flutter UI will appear in your app!
+
+For more detailed instructions, see [ios-example/README.md](ios-example/README.md).
 
 ### Android Integration
 
-1. Build the AAR as shown above
-2. Add the AAR to your Android project
-3. Configure dependencies in `build.gradle`
+Once the Flutter module is linked into your application, you need to fire up an instance of the Flutter engine and present the Flutter Activity.
 
-See [example_android/README.md](example_android/README.md) for detailed instructions.
+#### Step 1: Configure Dependencies
+
+Add the AAR repository and dependencies in your `app/build.gradle`:
+
+```gradle
+repositories {
+    maven {
+        url '<path-to-aar-repository>' // or '../../flutter_sdk/build/host/outputs/repo' for local builds
+    }
+    maven {
+        url 'https://storage.googleapis.com/download.flutter.io'
+    }
+    google()
+    mavenCentral()
+}
+
+dependencies {
+    releaseImplementation ('dev.flutter.example.flutter_module:flutter_release:1.0@aar') {
+        transitive = true
+    }
+    debugImplementation ('dev.flutter.example.flutter_module:flutter_debug:1.0@aar') {
+        transitive = true
+    }
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
+```
+
+#### Step 2: Configure AndroidManifest.xml
+
+Add the Flutter embedding metadata inside your `<application>` tag:
+
+```xml
+<meta-data
+    android:name="flutterEmbedding"
+    android:value="2" />
+```
+
+Also add the FlutterActivity:
+
+```xml
+<activity
+    android:name="io.flutter.embedding.android.FlutterActivity"
+    android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+    android:hardwareAccelerated="true"
+    android:windowSoftInputMode="adjustResize"
+    android:exported="true" />
+```
+
+#### Step 3: Set Up Flutter Engine in Application Class
+
+In your app's `Application` class, instantiate and cache a running Flutter engine. This pre-warms the engine for better performance:
+
+```kotlin
+import androidx.multidex.MultiDexApplication
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.FlutterEngineCache
+import io.flutter.embedding.engine.dart.DartExecutor
+
+const val ENGINE_ID = "1" // or any unique identifier
+
+class MyApplication : MultiDexApplication() {
+    override fun onCreate() {
+        super.onCreate()
+
+        // Instantiate a FlutterEngine
+        val flutterEngine = FlutterEngine(this)
+
+        // Start executing Dart code to pre-warm the FlutterEngine
+        flutterEngine.dartExecutor.executeDartEntrypoint(
+            DartExecutor.DartEntrypoint.createDefault()
+        )
+
+        // Cache the FlutterEngine to be used by FlutterActivity
+        FlutterEngineCache.getInstance().put(ENGINE_ID, flutterEngine)
+    }
+}
+
+#### Step 4: Launch Flutter Activity
+
+In any Activity class (typically in response to a button press or other UI event), launch the Flutter module's UI:
+
+```kotlin
+import io.flutter.embedding.android.FlutterActivity
+
+// In your Activity's onCreate or button click handler
+val intent = FlutterActivity
+    .withCachedEngine(ENGINE_ID)
+    .build(this)
+startActivity(intent)
+```
+
+**Example from MainActivity:**
+
+```kotlin
+button.setOnClickListener {
+    val intent = FlutterActivity
+        .withCachedEngine(ENGINE_ID)
+        .build(this)
+    startActivity(intent)
+}
+```
+
+Once executed, the Flutter UI will appear in your app!
+
+For more detailed instructions, see [example_android/README.md](example_android/README.md).
 
 ## Flutter SDK Details
 
@@ -111,6 +264,16 @@ Or use the VS Code launch configurations in `.vscode/launch.json`.
 - **Android**:
   - Android Studio
   - minSdkVersion 24+
+
+## Limitations
+
+**Packing Multiple Flutter Libraries**: In add-to-app setups, it's essential to understand that packing multiple Flutter libraries into an application isn't directly supported. Each Flutter module is typically integrated into a specific native app module, and there may be challenges when attempting to include multiple Flutter modules within the same native app.
+
+**Performance Overhead**: While Flutter provides excellent performance out-of-the-box, integrating Flutter into an existing app may introduce additional performance overhead, especially if not optimised properly.
+
+**Testing and Debugging**: Testing and debugging can be more challenging in an add-to-app setup, especially when dealing with issues that span both Flutter and native code.
+
+**Support for AndroidX**: In add-to-app setups on Android, the Flutter module only supports AndroidX applications. AndroidX is the modern Android library suite that replaces the now-deprecated Android Support Libraries.
 
 ## Dependencies
 
