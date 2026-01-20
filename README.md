@@ -1,93 +1,161 @@
-# prebuild_module
+# Loyalty Flutter SDK
 
-Embeds a full screen instance of Flutter as a prebuilt library that can be
-loaded into an existing iOS or Android app.
+A Flutter module SDK that can be embedded into existing iOS and Android applications as prebuilt frameworks. This SDK provides a complete Flutter-based UI with API integration, dependency injection, and seamless integration with native apps.
 
-## Description
+## Overview
 
-These apps are essentially identical to `android_fullscreen` and
-`ios_fullscreen`, respectively, with one key difference. Rather than being set
-up to compile the `flutter_module` from source each time the app is built, they
-import a the module as a prebuilt `aar` (Android) or framework (iOS). This can
-be useful for teams that don't want to require every developer working on the
-app to have the Flutter toolchain installed on their local machines.
+This repository contains a Flutter SDK module that can be integrated into native iOS and Android applications. The SDK is designed to be distributed as prebuilt frameworks (iOS) and AAR files (Android), allowing teams to integrate Flutter functionality without requiring all developers to have the Flutter toolchain installed.
 
-Prior to building either project for the first time, the `flutter_module` needs
-to be built.
+## Project Structure
 
-**Building for `android_using_prebuilt_module`**
+```
+loyalty_flutter_sdk/
+├── flutter_sdk/              # Flutter module source code
+│   ├── lib/
+│   │   ├── models/          # Data models (Post, Counter, etc.)
+│   │   ├── services/        # Business logic and API services
+│   │   ├── views/           # UI screens and widgets
+│   │   ├── main.dart        # Embedded mode entry point
+│   │   └── main_standalone.dart  # Standalone mode entry point
+│   └── assets/              # Lottie animations and other assets
+├── ios-example/             # iOS SwiftUI example app
+└── example_android/         # Android example app
+```
 
-To build `flutter_module` as an aar, run this command from the `flutter_module`
-directory:
+## Features
 
+- ✅ **Prebuilt Framework Support**: Distribute as prebuilt frameworks/AARs
+- ✅ **Dependency Injection**: Uses GetIt for service management
+- ✅ **API Integration**: Built-in HTTP client with Dio
+- ✅ **Dual Mode Support**: Embedded (MethodChannel) and Standalone modes
+- ✅ **Modern UI**: Lottie animations, Material Design
+- ✅ **Error Handling**: Comprehensive error handling with retry mechanisms
+- ✅ **State Management**: Provider pattern for reactive UI
+
+## Quick Start
+
+### Building the Flutter SDK
+
+To build the Flutter module as prebuilt frameworks/AARs:
+
+**For iOS:**
 ```bash
+cd flutter_sdk
+flutter pub get
+flutter build ios-framework --xcframework --output=../ios-example/Flutter
+```
+
+**For Android:**
+```bash
+cd flutter_sdk
+flutter pub get
 flutter build aar
 ```
 
-It will produce `aar` files for debug, profile, and release mode. The Android
-app is configured to import the appropriate `aar` based on its own build
-configuration, so if you build a debug version of the app, it will look
-for the debug `aar`, and so on.
+This will generate frameworks/AARs for Debug, Profile, and Release configurations.
 
-If the `flutter_module` project is updated, the `aar` files must be rebuilt via
-one of the commands above in order for those changes to appear in the app.
+### iOS Integration
 
-**Building for `ios_using_prebuilt_module`**
+#### SwiftUI Example (`ios-example`)
 
-To build `flutter_module` as a set of frameworks, run this command from the
-`flutter_module` directory:
+1. Ensure Flutter frameworks are in `ios-example/Flutter/Debug/` (or Release/Profile)
+2. Open `ios-example.xcodeproj` in Xcode
+3. Build and run
+
+See [ios-example/README.md](ios-example/README.md) for detailed instructions.
+
+#### UIKit Example (`ios_using_prebuilt_module`)
+
+1. Build Flutter frameworks as shown above
+2. Open `IOSUsingPrebuiltModule.xcodeproj` in Xcode
+3. Build and run
+
+### Android Integration
+
+1. Build the AAR as shown above
+2. Add the AAR to your Android project
+3. Configure dependencies in `build.gradle`
+
+See [example_android/README.md](example_android/README.md) for detailed instructions.
+
+## Flutter SDK Details
+
+### Architecture
+
+The Flutter SDK uses a clean architecture pattern:
+
+- **Models**: Data classes with Equatable for value comparison
+- **Services**: Business logic and API communication
+- **Views**: UI components and screens
+- **Dependency Injection**: GetIt for service registration
+
+### Key Components
+
+- **Counter Service**: Demonstrates MethodChannel communication (embedded mode) or local state (standalone mode)
+- **Posts Service**: API integration example using Dio
+- **Posts View**: List view with pull-to-refresh and error handling
+- **Details Page**: Detail view with API integration
+
+### Running Standalone
+
+The SDK can run in standalone mode for development/testing:
 
 ```bash
-flutter build ios-framework --xcframework --output=../project_name/Flutter
+cd flutter_sdk
+flutter pub get
+flutter run
 ```
 
-This will output frameworks for debug, profile, and release modes into
-`ios_using_prebuilt_module/Flutter`. The project file for
-`ios_using_prebuilt_module` has been configured to find the frameworks there.
-
-For more information on how to modify an existing iOS app to reference prebuilt
-Flutter frameworks, see this article in the Flutter GitHub wiki:
-
-https://flutter.dev/docs/development/add-to-app/ios/project-setup
-
-## tl;dr
-
-If you're just looking to get up and running quickly, these bash commands will
-fetch packages and set up dependencies (note that the above commands assume
-you're building for both iOS and Android, with both toolchains installed):
-
-```bash
-  #!/bin/bash
-  set -e
-
-  cd flutter_module/
-  flutter pub get
-
-  # For Android builds:
-  flutter build aar
-  open -a "Android Studio" ../android_using_prebuilt_module/ # macOS only
-  # Or open the ../android_using_prebuilt_module folder in Android Studio for
-  # other platforms.
-
-  # For iOS builds:
-  flutter build ios-framework --xcframework --output=../ios_using_prebuilt_module/Flutter
-  open ../ios_using_prebuilt_module/IOSUsingPrebuiltModule.xcodeproj
-```
+Or use the VS Code launch configurations in `.vscode/launch.json`.
 
 ## Requirements
 
-* Flutter
-* Android
-  * Android Studio
-* iOS
-  * Xcode
-  * Cocoapods
+- **Flutter SDK**: 3.9.0 or higher
+- **iOS**: 
+  - Xcode 14.0+
+  - iOS 12.4+
+- **Android**:
+  - Android Studio
+  - minSdkVersion 24+
 
-## Questions/issues
+## Dependencies
 
-See [add_to_app/README.md](https://github.com/flutter/samples/blob/main/add_to_app/README.md) for further help.
+The Flutter SDK uses the following key dependencies:
 
----
-**Next Step**
+- `provider`: State management
+- `get_it`: Dependency injection
+- `dio`: HTTP client
+- `dartz`: Functional programming utilities
+- `equatable`: Value equality
+- `lottie`: Animations
 
-You can now [add a Flutter screen](https://docs.flutter.dev/add-to-app/ios/add-flutter-screen) to your existing iOS app.
+## Development
+
+### Project Setup
+
+1. Clone the repository
+2. Navigate to `flutter_sdk/`
+3. Run `flutter pub get`
+4. Open in your preferred IDE (VS Code or Android Studio)
+
+### Building for Distribution
+
+When ready to distribute:
+
+1. Build frameworks/AARs for all configurations (Debug, Profile, Release)
+2. Distribute the prebuilt files to your team
+3. Teams can integrate without Flutter SDK installed
+
+## Documentation
+
+- [Flutter SDK README](flutter_sdk/README.md) - Detailed Flutter module documentation
+- [iOS Example README](ios-example/README.md) - iOS SwiftUI integration guide
+- [Android Example README](example_android/README.md) - Android integration guide
+
+## License
+
+Copyright © 2026 Nabraj Khadka
+
+## Support
+
+For issues and questions, please refer to the individual README files in each example directory or check the Flutter [add-to-app documentation](https://docs.flutter.dev/add-to-app).
