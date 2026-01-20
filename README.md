@@ -1,4 +1,4 @@
-# Loyalty Flutter SDK
+# Flutter SDK
 
 A Flutter module SDK that can be embedded into existing iOS and Android applications as prebuilt frameworks. This SDK provides a complete Flutter-based UI with API integration, dependency injection, and seamless integration with native apps.
 
@@ -9,7 +9,7 @@ This repository contains a Flutter SDK module that can be integrated into native
 ## Project Structure
 
 ```
-loyalty_flutter_sdk/
+flutter_sdk_repo/
 ├── flutter_sdk/              # Flutter module source code
 │   ├── lib/
 │   │   ├── models/          # Data models (Post, Counter, etc.)
@@ -63,12 +63,6 @@ This will generate frameworks/AARs for Debug, Profile, and Release configuration
 3. Build and run
 
 See [ios-example/README.md](ios-example/README.md) for detailed instructions.
-
-#### UIKit Example (`ios_using_prebuilt_module`)
-
-1. Build Flutter frameworks as shown above
-2. Open `IOSUsingPrebuiltModule.xcodeproj` in Xcode
-3. Build and run
 
 ### Android Integration
 
