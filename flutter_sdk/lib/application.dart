@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'views/posts_view.dart';
 import 'views/home_page.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Module Title',
       theme: ThemeData.light(),
       debugShowCheckedModeBanner: false,
+      showPerformanceOverlay: kDebugMode,
       initialRoute: '/counter',
       routes: {
         '/': (context) => const PostsView(),
