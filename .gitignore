@@ -33,3 +33,6 @@ build/
 *.tmp
 *.temp
 .cache/
+
+# Maven repository
+maven-repo/
