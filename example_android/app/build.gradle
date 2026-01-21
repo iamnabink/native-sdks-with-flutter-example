@@ -45,11 +45,11 @@ repositories {
 }
 
 dependencies {
-    releaseImplementation ('dev.flutter.example.flutter_module:flutter_release:1.0@aar') {
+    releaseImplementation ('dev.nabrajkhadka.example.flutter_module:flutter_release:1.0@aar') {
         transitive = true
     }
 
-    debugImplementation ('dev.flutter.example.flutter_module:flutter_debug:1.0@aar') {
+    debugImplementation ('dev.nabrajkhadka.example.flutter_module:flutter_debug:1.0@aar') {
         transitive = true
     }
 

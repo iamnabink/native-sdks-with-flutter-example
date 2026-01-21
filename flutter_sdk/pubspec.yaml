@@ -37,5 +37,5 @@ flutter:
   # identifiers, which may be completely independent or the same as these.
   module:
     androidX: true
-    androidPackage: dev.flutter.example.flutter_module
-    iosBundleIdentifier: dev.flutter.example.flutterModule
+    androidPackage: dev.nabrajkhadka.example.flutter_module
+    iosBundleIdentifier: dev.nabrajkhadka.example.flutterModule
