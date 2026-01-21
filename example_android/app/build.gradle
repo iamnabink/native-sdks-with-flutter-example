@@ -36,7 +36,8 @@ repositories {
     maven {
         // This maven repo is created when you run `flutter build aar`. It contains compiled code
         // and resources for flutter_sdk itself.
-        url '../maven-repo'
+//        url '../maven-repo'
+        url 'https://iamnabink.github.io/flutter-android-sdk-maven-repo'
     }
     maven {
         // This maven repo contains artifacts for Flutter's Android embedding.
