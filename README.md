@@ -6,6 +6,8 @@ A Flutter module SDK that can be embedded into existing iOS and Android applicat
 
 This repository contains a Flutter SDK module that can be integrated into native iOS and Android applications. The SDK is designed to be distributed as prebuilt frameworks (iOS) and AAR files (Android), allowing teams to integrate Flutter functionality without requiring all developers to have the Flutter toolchain installed.
 
+For Android integration, this project includes a Maven repository in the `maven-repo/` directory that can be used locally or referenced remotely. See [maven-repo/README.md](maven-repo/README.md) for information about Maven repository hosting and distribution.
+
 ## Project Structure
 
 ```
@@ -121,12 +123,15 @@ Once the Flutter module is linked into your application, you need to fire up an 
 
 #### Step 1: Configure Dependencies
 
-Add the AAR repository and dependencies in your `app/build.gradle`:
+Add the AAR repository and dependencies in your `app/build.gradle`. This example project includes a Maven repository in the `maven-repo/` directory:
+
+**Option 1: Use Local Maven Repository**
 
 ```gradle
 repositories {
     maven {
-        url '<path-to-aar-repository>' // or '../../flutter_sdk/build/host/outputs/repo' for local builds
+        // Local maven repository from this example project
+        url '../maven-repo'  // Adjust path relative to your project
     }
     maven {
         url 'https://storage.googleapis.com/download.flutter.io'
@@ -134,12 +139,32 @@ repositories {
     google()
     mavenCentral()
 }
+```
 
+**Option 2: Use Remote Maven Repository**
+
+```gradle
+repositories {
+    maven {
+        // Remote Maven repository (e.g., GitHub Pages)
+        url 'https://iamnabink.github.io/flutter-android-sdk-maven-repo'
+    }
+    maven {
+        url 'https://storage.googleapis.com/download.flutter.io'
+    }
+    google()
+    mavenCentral()
+}
+```
+
+**Add Dependencies:**
+
+```gradle
 dependencies {
-    releaseImplementation ('dev.flutter.example.flutter_module:flutter_release:1.0@aar') {
+    releaseImplementation ('dev.nabrajkhadka.example.flutter_module:flutter_release:1.0@aar') {
         transitive = true
     }
-    debugImplementation ('dev.flutter.example.flutter_module:flutter_debug:1.0@aar') {
+    debugImplementation ('dev.nabrajkhadka.example.flutter_module:flutter_debug:1.0@aar') {
         transitive = true
     }
     implementation 'androidx.multidex:multidex:2.0.1'
