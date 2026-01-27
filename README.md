@@ -130,6 +130,7 @@ repositories {
     maven {
         // Maven repository hosted on GitHub Pages
         url 'https://iamnabink.github.io/flutter-android-sdk-maven-repo'
+        // url '../../flutter_module/build/host/outputs/repo'
     }
     maven {
         url 'https://storage.googleapis.com/download.flutter.io'
