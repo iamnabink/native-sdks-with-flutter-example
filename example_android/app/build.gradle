@@ -38,6 +38,7 @@ repositories {
         // and resources for flutter_sdk itself.
 //        url '../maven-repo'
         url 'https://iamnabink.github.io/flutter-android-sdk-maven-repo'
+// url '../../flutter_sdk/build/host/outputs/repo'
     }
     maven {
         // This maven repo contains artifacts for Flutter's Android embedding.
