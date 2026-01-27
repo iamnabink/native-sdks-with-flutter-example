@@ -2,7 +2,7 @@
 
 An example Android application demonstrating how to integrate a prebuilt AAR library from a Maven repository.
 
-This example shows how to consume Flutter AAR files from a Maven repository. The Maven repository for this example is located in `../maven-repo/` and can be used locally or referenced remotely. For information about hosting and distributing Maven repositories, see [maven-repo/README.md](../maven-repo/README.md).
+This example shows how to consume Flutter AAR files from a Maven repository. The Maven repository is hosted separately on GitHub Pages. For detailed information about the Maven repository structure, hosting, distribution, and usage, see the [Maven Repository Documentation](https://github.com/iamnabink/flutter-android-sdk-maven-repo).
 
 ## Integration Steps
 
@@ -10,28 +10,10 @@ This example shows how to consume Flutter AAR files from a Maven repository. The
 
 In `app/build.gradle`, add the Maven repository containing the Flutter AAR files:
 
-**Option 1: Local Maven Repository**
-
 ```gradle
 repositories {
     maven {
-        // Local Maven repository from this example project
-        url '../maven-repo'
-    }
-    maven {
-        url 'https://storage.googleapis.com/download.flutter.io'
-    }
-    google()
-    mavenCentral()
-}
-```
-
-**Option 2: Remote Maven Repository**
-
-```gradle
-repositories {
-    maven {
-        // Remote Maven repository URL
+        // Maven repository hosted on GitHub Pages
         url 'https://iamnabink.github.io/flutter-android-sdk-maven-repo'
     }
     maven {
@@ -41,6 +23,8 @@ repositories {
     mavenCentral()
 }
 ```
+
+For more information about the Maven repository structure, hosting options, and alternative setup methods, see the [Maven Repository Documentation](https://github.com/iamnabink/flutter-android-sdk-maven-repo).
 
 **Add Dependencies:**
 
