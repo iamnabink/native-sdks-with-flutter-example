@@ -318,6 +318,7 @@ When ready to distribute:
 - [Flutter SDK README](flutter_sdk/README.md) - Detailed Flutter module documentation
 - [iOS Example README](ios-example/README.md) - iOS SwiftUI integration guide
 - [Android Example README](example_android/README.md) - Android integration guide
+- [Official Flutter reference](https://github.com/flutter/samples/tree/main/add_to_app/prebuilt_module) 
 
 ## License
 
